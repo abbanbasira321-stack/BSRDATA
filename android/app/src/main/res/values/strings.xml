@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BSR DATA</string>
+    <string name="title_activity_main">BSR DATA</string>
+    <string name="package_name">com.bsr.data</string>
+    <string name="custom_url_scheme">com.bsr.data</string>
+</resources>
