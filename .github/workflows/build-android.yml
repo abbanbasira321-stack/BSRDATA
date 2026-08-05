@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install dependencies
-        run: npm install
+- name: Install dependencies
+  run: |
+    npm install
+    npm install @capacitor/core@8.4.1 @capacitor/android@8.4.1
 
       - name: Sync Capacitor
         run: npx cap sync android
