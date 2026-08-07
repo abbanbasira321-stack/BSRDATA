@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy Data</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+<h1>Buy Data</h1>
+</header>
+
+<div class="form">
+
+<label>Network</label>
+<select id="network">
+<option>MTN</option>
+<option>Airtel</option>
+<option>Glo</option>
+<option>9mobile</option>
+</select>
+
+<label>Phone Number</label>
+<input type="tel" id="phone" placeholder="08012345678">
+
+<label>Data Plan</label>
+<select id="plan">
+<option>500MB</option>
+<option>1GB</option>
+<option>2GB</option>
+<option>5GB</option>
+</select>
+
+<button onclick="buyData()">Buy Now</button>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
