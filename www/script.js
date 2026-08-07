@@ -25,12 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-const plan = document.getElementById("plan");
-const amount = document.querySelector(".amount h2");
+document.addEventListener("DOMContentLoaded", function () {
+  const plan = document.getElementById("plan");
+  const amount = document.querySelector(".amount h2");
 
-if (plan && amount) {
-  plan.addEventListener("change", function () {
-    const price = this.value.split("₦")[1];
-    amount.textContent = "₦" + price;
-  });
-}
+  if (plan && amount) {
+    amount.textContent = "₦" + plan.value;
+
+    plan.addEventListener("change", function () {
+      amount.textContent = "₦" + this.value;
+    });
+  }
+});
