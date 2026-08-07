@@ -146,3 +146,59 @@ text-align:center;
 color:#0B5ED7;
 cursor:pointer;
 }
+.topbar{
+background:#1565c0;
+color:#fff;
+padding:18px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.form-card{
+background:#fff;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.form-card label{
+display:block;
+margin-top:15px;
+font-weight:bold;
+}
+
+.form-card input,
+.form-card select{
+width:100%;
+padding:14px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:16px;
+box-sizing:border-box;
+}
+
+.amount{
+margin-top:20px;
+text-align:center;
+background:#f5f5f5;
+padding:15px;
+border-radius:12px;
+}
+
+.buy-btn{
+width:100%;
+margin-top:20px;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#1565c0;
+color:white;
+font-size:18px;
+font-weight:bold;
+}
