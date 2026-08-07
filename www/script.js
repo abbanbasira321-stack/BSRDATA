@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cards = document.querySelectorAll(".card");
 
   cards.forEach(card => {
-    const title = card.querySelector("h3");
+  const title = card.querySelector("h3");
 
     if (title && title.textContent.trim() === "Buy Data") {
       card.onclick = function () {
@@ -25,15 +25,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const plan = document.getElementById("plan");
   const amount = document.querySelector(".amount h2");
 
-  if (plan && amount) {
-    amount.textContent = "₦" + plan.value;
-
-    plan.addEventListener("change", function () {
-      amount.textContent = "₦" + this.value;
-    });
+  function updateAmount() {
+    amount.textContent = "₦" + plan.options[plan.selectedIndex].value;
   }
+
+  updateAmount();
+  plan.addEventListener("change", updateAmount);
 });
