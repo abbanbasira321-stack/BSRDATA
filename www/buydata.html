@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buy Data</title>
+<title>BSR DATA - Buy Data</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,39 +18,442 @@
 <div class="form-card">
 
 <label>Network</label>
+
 <select id="network">
-<option>MTN</option>
-<option>Airtel</option>
-<option>Glo</option>
-<option>9mobile</option>
+    <option value="">Choose Network</option>
+    <option value="MTN">MTN</option>
+    <option value="Airtel">Airtel</option>
+    <option value="Glo">Glo</option>
+    <option value="m_9mobile">9mobile</option>
 </select>
 
 <label>Phone Number</label>
-<input type="tel" placeholder="08012345678">
+
+<input
+    id="phone"
+    type="tel"
+    maxlength="11"
+    placeholder="08012345678"
+>
 
 <label>Data Plan</label>
 
-<select id="plan">
-  <option value="75">500MB - ₦75</option>
-  <option value="135" selected>1GB - ₦135</option>
-  <option value="270">2GB - ₦270</option>
-  <option value="675">5GB - ₦675</option>
+<select id="plan" disabled>
+    <option value="">Loading data plans...</option>
 </select>
 
 <div class="amount">
-<h3>Amount</h3>
-<h2>₦135</h2>
+    <h3>Amount</h3>
+    <h2 id="amount">₦0.00</h2>
 </div>
 
-<button class="buy-btn" onclick="buyData()">
-BUY NOW
+<button id="buyBtn" class="buy-btn" type="button" disabled>
+    BUY NOW
 </button>
 
-</div>
+<div id="message"></div>
 
 </div>
+</div>
 
-<script src="script.js"></script>
+<script>
+
+const API = "http://127.0.0.1:3000";
+
+const networkSelect = document.getElementById("network");
+const phoneInput = document.getElementById("phone");
+const planSelect = document.getElementById("plan");
+const amountText = document.getElementById("amount");
+const buyBtn = document.getElementById("buyBtn");
+const message = document.getElementById("message");
+
+let allPlans = {};
+
+function messageShow(text, type = "") {
+    message.textContent = text;
+    message.className = type;
+}
+
+
+// ==========================
+// LOAD PLANS
+// ==========================
+
+async function loadPlans() {
+
+    try {
+
+        planSelect.disabled = true;
+
+        planSelect.innerHTML =
+            '<option value="">Loading data plans...</option>';
+
+        const response =
+            await fetch(API + "/api/plans");
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data =
+            await response.json();
+
+        console.log("PLANS RESPONSE:", data);
+
+        if (!data.MOBILE_NETWORK) {
+            throw new Error("MOBILE_NETWORK not found");
+        }
+
+        allPlans =
+            data.MOBILE_NETWORK;
+
+        planSelect.innerHTML =
+            '<option value="">Choose Data Plan</option>';
+
+        messageShow("");
+
+        console.log(
+            "Available networks:",
+            Object.keys(allPlans)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "PLANS LOAD ERROR:",
+            error
+        );
+
+        planSelect.innerHTML =
+            '<option value="">Unable to load plans</option>';
+
+        messageShow(
+            "Failed to load data plans.",
+            "error"
+        );
+    }
+}
+
+
+// ==========================
+// NETWORK CHANGE
+// ==========================
+
+networkSelect.addEventListener(
+    "change",
+    function () {
+
+        const network =
+            this.value;
+
+        planSelect.innerHTML =
+            '<option value="">Choose Data Plan</option>';
+
+        amountText.textContent =
+            "₦0.00";
+
+        buyBtn.disabled = true;
+
+        if (!network) {
+
+            planSelect.disabled = true;
+
+            return;
+        }
+
+
+        const networkData =
+            allPlans[network];
+
+        console.log(
+            "Selected network:",
+            network
+        );
+
+        console.log(
+            "Network data:",
+            networkData
+        );
+
+
+        if (!networkData) {
+
+            planSelect.innerHTML =
+                '<option value="">No plans available</option>';
+
+            planSelect.disabled = true;
+
+            return;
+        }
+
+
+        /*
+         * API format:
+         *
+         * MTN: [
+         *   {
+         *     ID: "01",
+         *     PRODUCT: [...]
+         *   }
+         * ]
+         */
+
+
+        let products = [];
+
+
+        networkData.forEach(group => {
+
+            if (
+                group &&
+                Array.isArray(group.PRODUCT)
+            ) {
+
+                products =
+                    products.concat(
+                        group.PRODUCT
+                    );
+            }
+
+        });
+
+
+        console.log(
+            "Products found:",
+            products.length
+        );
+
+
+        if (products.length === 0) {
+
+            planSelect.innerHTML =
+                '<option value="">No plans available</option>';
+
+            planSelect.disabled = true;
+
+            return;
+        }
+
+
+        products.forEach(product => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                product.PRODUCT_ID;
+
+            option.textContent =
+                product.PRODUCT_NAME +
+                " - ₦" +
+                Number(
+                    product.PRODUCT_AMOUNT
+                ).toFixed(2);
+
+            option.dataset.amount =
+                product.PRODUCT_AMOUNT;
+
+            option.dataset.name =
+                product.PRODUCT_NAME;
+
+            planSelect.appendChild(
+                option
+            );
+
+        });
+
+
+        planSelect.disabled = false;
+
+    }
+);
+
+
+// ==========================
+// PLAN CHANGE
+// ==========================
+
+planSelect.addEventListener(
+    "change",
+    function () {
+
+        const option =
+            this.options[
+                this.selectedIndex
+            ];
+
+
+        if (
+            !option ||
+            !option.value
+        ) {
+
+            amountText.textContent =
+                "₦0.00";
+
+            buyBtn.disabled = true;
+
+            return;
+        }
+
+
+        amountText.textContent =
+            "₦" +
+            Number(
+                option.dataset.amount
+            ).toFixed(2);
+
+
+        buyBtn.disabled = false;
+
+    }
+);
+
+
+// ==========================
+// BUY DATA
+// ==========================
+
+buyBtn.addEventListener(
+    "click",
+    async function () {
+
+        const network =
+            networkSelect.value;
+
+        const phone =
+            phoneInput.value.trim();
+
+        const plan =
+            planSelect.value;
+
+
+        if (!network) {
+
+            messageShow(
+                "Please select a network.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!/^0\d{10}$/.test(phone)) {
+
+            messageShow(
+                "Enter a valid Nigerian phone number.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!plan) {
+
+            messageShow(
+                "Please select a data plan.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        buyBtn.disabled = true;
+
+        buyBtn.textContent =
+            "PROCESSING...";
+
+
+        messageShow(
+            "Processing data purchase..."
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API + "/api/buydata",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            network: network,
+                            phone: phone,
+                            plan: plan
+                        })
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "BUY RESPONSE:",
+                result
+            );
+
+
+            if (
+                result.status === "SUCCESS" ||
+                result.status === "PROCESSING"
+            ) {
+
+                messageShow(
+                    "Request sent successfully. Request ID: " +
+                    (result.requestID || "N/A"),
+                    "success"
+                );
+
+            } else {
+
+                messageShow(
+                    result.message ||
+                    "Data purchase failed.",
+                    "error"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "BUY ERROR:",
+                error
+            );
+
+            messageShow(
+                "Unable to connect to BSR DATA server.",
+                "error"
+            );
+
+        } finally {
+
+            buyBtn.disabled = false;
+
+            buyBtn.textContent =
+                "BUY NOW";
+
+        }
+
+    }
+);
+
+
+// Start loading
+loadPlans();
+
+</script>
 
 </body>
 </html>
