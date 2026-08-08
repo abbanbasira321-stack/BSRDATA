@@ -282,14 +282,14 @@ app.post("/api/buydata", async (req, res) => {
 app.get("/api/query", async (req, res) => {
   try {
 
-    const { requestID, orderID } = req.query;
+    const { orderID } = req.query;
 
-    if (!requestID && !orderID) {
-      return res.status(400).json({
-        status: "ERROR",
-        message: "requestID or orderID is required"
-      });
-    }
+if (!orderID) {
+  return res.status(400).json({
+    status: "ERROR",
+    message: "orderID is required"
+  });
+}
 
     const url = new URL(
       "https://www.nellobytesystems.com/APIQueryV1.asp"
@@ -305,17 +305,10 @@ app.get("/api/query", async (req, res) => {
       process.env.CK_APIKEY
     );
 
-    if (orderID) {
-      url.searchParams.set(
-        "OrderID",
-        orderID
-      );
-    } else {
-      url.searchParams.set(
-        "RequestID",
-        requestID
-      );
-    }
+url.searchParams.set(
+  "OrderID",
+  orderID
+);
 
     const response = await fetch(url);
 
