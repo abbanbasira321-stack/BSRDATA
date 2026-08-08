@@ -21,10 +21,18 @@ app.get("/api/test", async (req, res) => {
     url.searchParams.set("UserID", process.env.CK_USERID);
     url.searchParams.set("APIKey", process.env.CK_APIKEY);
 
-    const response = await fetch(url);
-    const data = await response.json();
+const response = await fetch(url);
 
-    res.json(data);
+if (!response.ok) {
+  return res.status(502).json({
+    status: "ERROR",
+    message: "NelloByte query request failed"
+  });
+}
+
+const data = await response.json();
+
+res.json(data);
 
   } catch (error) {
     console.error(error);
