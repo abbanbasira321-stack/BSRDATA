@@ -146,59 +146,61 @@ app.post("/api/buydata", async (req, res) => {
       });
     }
 
-    // Basic phone validation
-    if (!/^0\d{10}$/.test(phone)) {
-    // Verify that the selected plan belongs to the selected network
-    const plansResponse = await fetch(
-      "https://www.nellobytesystems.com/APIDatabundlePlansV2.asp"
-    );
+// Basic phone validation
+if (!/^0\d{10}$/.test(phone)) {
+  return res.status(400).json({
+    status: "ERROR",
+    message: "Invalid Nigerian phone number"
+  });
+}
 
-    if (!plansResponse.ok) {
-      return res.status(502).json({
-        status: "ERROR",
-        message: "Unable to verify data plan"
-      });
-    }
+// Verify that the selected plan belongs to the selected network
+const plansResponse = await fetch(
+  "https://www.nellobytesystems.com/APIDatabundlePlansV2.asp"
+);
 
-    const plans = await plansResponse.json();
+if (!plansResponse.ok) {
+  return res.status(502).json({
+    status: "ERROR",
+    message: "Unable to verify data plan"
+  });
+}
 
-    const networkPlans =
-      plans.MOBILE_NETWORK?.[network];
+const plans = await plansResponse.json();
 
-    if (!networkPlans || !networkPlans[0]) {
-      return res.status(400).json({
-        status: "ERROR",
-        message: "Invalid mobile network"
-      });
-    }
+const networkPlans =
+  plans.MOBILE_NETWORK?.[network];
 
-    const selectedProduct =
-      (networkPlans[0].PRODUCT || []).find(
-        product =>
-          product.PRODUCT_ID === String(plan)
-      );
+if (!networkPlans || !networkPlans[0]) {
+  return res.status(400).json({
+    status: "ERROR",
+    message: "Invalid mobile network"
+  });
+}
 
-    if (!selectedProduct) {
-      return res.status(400).json({
-        status: "ERROR",
-        message: "Invalid data plan for selected network"
-      });
-    }
+const selectedProduct =
+  (networkPlans[0].PRODUCT || []).find(
+    product =>
+      product.PRODUCT_ID === String(plan)
+  );
 
-    console.log("Verified plan:", {
-      network,
-      productID: selectedProduct.PRODUCT_ID,
-      productCode: selectedProduct.PRODUCT_CODE,
-      productName: selectedProduct.PRODUCT_NAME,
-      amount: selectedProduct.PRODUCT_AMOUNT
-    });
-      return res.status(400).json({
-        status: "ERROR",
-        message: "Invalid Nigerian phone number"
-      });
-    }
+if (!selectedProduct) {
+  return res.status(400).json({
+    status: "ERROR",
+    message: "Invalid data plan for selected network"
+  });
+}
 
-    // Generate unique RequestID
+console.log("Verified plan:", {
+  network,
+  productID: selectedProduct.PRODUCT_ID,
+  productCode: selectedProduct.PRODUCT_CODE,
+  productName: selectedProduct.PRODUCT_NAME,
+  amount: selectedProduct.PRODUCT_AMOUNT
+});
+
+// Generate unique RequestID
+
     const requestID =
       "BSR" +
       Date.now() +
