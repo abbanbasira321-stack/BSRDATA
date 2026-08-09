@@ -259,10 +259,13 @@ app.post("/api/buydata", async (req, res) => {
 
     console.log("Nellobyte response:", data);
 
-    res.json({
-      ...data,
-      requestID
-    });
+res.json({
+  status: data.status || data.Status || "UNKNOWN",
+  orderID: data.orderID || data.OrderID || null,
+  requestID: requestID,
+  remark: data.remark || data.Remark || data.message || "",
+  response: data
+});
 
   } catch (error) {
 
