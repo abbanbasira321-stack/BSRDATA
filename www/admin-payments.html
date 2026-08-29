@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BSR DATA - Admin Payments</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4f7fc;
+    font-family: Arial, sans-serif;
+    color: #152238;
+    padding-bottom: 30px;
+}
+
+.topbar {
+    background: linear-gradient(135deg, #1769c2, #0755c9);
+    color: white;
+    padding: 28px 20px;
+    border-radius: 0 0 32px 32px;
+}
+
+.topbar h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.container {
+    padding: 20px;
+}
+
+.summary {
+    background: white;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 7px 20px rgba(0,0,0,.08);
+}
+
+.summary h3 {
+    margin: 0 0 8px;
+}
+
+#statusText {
+    color: #777;
+}
+
+.payment-card {
+    background: white;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 7px 20px rgba(0,0,0,.08);
+}
+
+.payment-card.pending {
+    border-left: 5px solid #f0ad00;
+}
+
+.payment-card.approved {
+    border-left: 5px solid #198754;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 8px 0;
+}
+
+.label {
+    color: #777;
+}
+
+.amount {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.status {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.approved {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.approve-btn {
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    padding: 16px;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #198754, #0f6b43);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.approve-btn:disabled {
+    opacity: .55;
+}
+
+.empty {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 22px;
+    text-align: center;
+    color: #777;
+}
+
+.refresh-btn {
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    padding: 15px;
+    background: #1769c2;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h2>🔐 BSR DATA ADMIN</h2>
+</div>
+
+<div class="container">
+
+    <div class="summary">
+        <h3>💰 Payment Management</h3>
+        <div id="statusText">
+            Loading payments...
+        </div>
+    </div>
+
+    <button
+        class="refresh-btn"
+        onclick="loadPayments()"
+    >
+        🔄 REFRESH PAYMENTS
+    </button>
+
+    <div id="payments"></div>
+
+</div>
+
+<script>
+
+async function loadPayments() {
+
+    const container =
+        document.getElementById("payments");
+
+    const statusText =
+        document.getElementById("statusText");
+
+    container.innerHTML =
+        '<div class="empty">⏳ Loading...</div>';
+
+    try {
+
+        const response =
+            await fetch("/api/admin/payments");
+
+        const result =
+            await response.json();
+
+        if (
+            result.status !== "SUCCESS"
+        ) {
+            throw new Error(
+                result.message ||
+                "Unable to load payments"
+            );
+        }
+
+        const payments =
+            result.payments || [];
+
+        const pending =
+            payments.filter(
+                payment =>
+                    payment.status === "PENDING"
+            );
+
+        statusText.textContent =
+            pending.length +
+            " pending payment(s) • " +
+            payments.length +
+            " total payment(s)";
+
+        if (payments.length === 0) {
+
+            container.innerHTML =
+                '<div class="empty">No payments found.</div>';
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        payments
+            .slice()
+            .reverse()
+            .forEach(payment => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "payment-card " +
+                    (
+                        payment.status === "PENDING"
+                            ? "pending"
+                            : "approved"
+                    );
+
+                const phone =
+                    payment.phone ||
+                    payment.userPhone ||
+                    "N/A";
+
+                const statusClass =
+                    payment.status === "PENDING"
+                        ? "pending"
+                        : "approved";
+
+                card.innerHTML = `
+
+                    <div class="payment-row">
+                        <span class="label">📱 Phone</span>
+                        <strong>${phone}</strong>
+                    </div>
+
+                    <div class="amount">
+                        ₦${Number(payment.amount).toLocaleString(
+                            "en-NG",
+                            {
+                                minimumFractionDigits: 2
+                            }
+                        )}
+                    </div>
+
+                    <div class="payment-row">
+                        <span class="label">🏦 Bank</span>
+                        <strong>${payment.bank || "N/A"}</strong>
+                    </div>
+
+                    <div class="payment-row">
+                        <span class="label">👤 Account</span>
+                        <strong>${payment.accountName || "N/A"}</strong>
+                    </div>
+
+                    <div class="payment-row">
+                        <span class="label">🔢 Reference</span>
+                        <strong>${payment.reference || "N/A"}</strong>
+                    </div>
+
+                    <div class="payment-row">
+                        <span class="label">🆔 Payment ID</span>
+                        <small>${payment.id}</small>
+                    </div>
+
+                    <div style="margin-top:12px">
+                        <span class="status ${statusClass}">
+                            ${payment.status}
+                        </span>
+                    </div>
+
+                    ${
+                        payment.status === "PENDING"
+                        ? `
+                        <button
+                            class="approve-btn"
+                            onclick="approvePayment(
+                                '${payment.id}',
+                                '${phone}',
+                                this
+                            )"
+                        >
+                            ✅ APPROVE PAYMENT
+                        </button>
+                        `
+                        : ""
+                    }
+
+                `;
+
+                container.appendChild(card);
+
+            });
+
+    } catch (error) {
+
+        console.error(
+            "ADMIN PAYMENTS ERROR:",
+            error
+        );
+
+        statusText.textContent =
+            "Unable to load payments.";
+
+        container.innerHTML =
+            '<div class="empty">❌ Failed to load payments.</div>';
+    }
+}
+
+
+async function approvePayment(
+    paymentID,
+    phone,
+    button
+) {
+
+    if (
+        !confirm(
+            "Approve this payment and add the money to the wallet?"
+        )
+    ) {
+        return;
+    }
+
+    button.disabled = true;
+
+    button.textContent =
+        "⏳ APPROVING...";
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/admin/approve-payment",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            paymentID:
+                                paymentID,
+
+                            phone:
+                                phone
+                        })
+                }
+            );
+
+        const result =
+            await response.json();
+
+        if (
+            result.status !== "SUCCESS"
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Approval failed"
+            );
+        }
+
+        alert(
+            "✅ Payment approved successfully!\n\n" +
+            "Phone: " +
+            result.phone +
+            "\n" +
+            "New Balance: ₦" +
+            result.balance
+        );
+
+        loadPayments();
+
+    } catch (error) {
+
+        console.error(
+            "APPROVE ERROR:",
+            error
+        );
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "✅ APPROVE PAYMENT";
+    }
+}
+
+
+loadPayments();
+
+</script>
+
+</body>
+</html>

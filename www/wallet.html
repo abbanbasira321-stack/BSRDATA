@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BSR DATA - Wallet</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4f7fc;
+    font-family: Arial, sans-serif;
+    color: #172033;
+    padding-bottom: 95px;
+}
+
+/* TOPBAR */
+
+.topbar {
+    background: linear-gradient(135deg, #1769c2, #0755c9);
+    color: white;
+    padding: 22px 20px 28px;
+    border-radius: 0 0 28px 28px;
+}
+
+.topbar h2 {
+    margin: 0;
+    font-size: 27px;
+}
+
+/* CONTAINER */
+
+.container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* WALLET CARD */
+
+.wallet-card {
+    margin-top: -5px;
+    background: linear-gradient(135deg, #1769c2, #0755c9);
+    color: white;
+    border-radius: 25px;
+    padding: 27px 22px;
+    box-shadow: 0 12px 28px rgba(23,105,194,.25);
+}
+
+.wallet-label {
+    font-size: 15px;
+    opacity: .9;
+    margin-bottom: 8px;
+}
+
+.wallet-balance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wallet-balance h1 {
+    margin: 0;
+    font-size: 38px;
+    letter-spacing: .5px;
+}
+
+.refresh-btn {
+    border: 0;
+    background: rgba(255,255,255,.18);
+    color: white;
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* WALLET ACTIONS */
+
+.wallet-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.wallet-action {
+    border: 0;
+    border-radius: 15px;
+    padding: 15px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.fund-btn {
+    background: #ffd447;
+    color: #111;
+}
+
+.withdraw-btn {
+    background: white;
+    color: #1769c2;
+}
+
+/* QUICK LINKS */
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.quick-card {
+    background: white;
+    border-radius: 18px;
+    padding: 17px;
+    box-shadow: 0 5px 16px rgba(0,0,0,.07);
+    cursor: pointer;
+}
+
+.quick-icon {
+    font-size: 25px;
+}
+
+.quick-title {
+    margin-top: 7px;
+    font-weight: bold;
+}
+
+.quick-subtitle {
+    color: #777;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* SECTION TITLE */
+
+.section-title {
+    font-size: 21px;
+    margin: 28px 0 14px;
+}
+
+/* TRANSACTIONS */
+
+.transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.transaction-card {
+    background: white;
+    border-radius: 18px;
+    padding: 17px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.06);
+}
+
+.transaction-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.transaction-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.transaction-status {
+    color: #198754;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.transaction-amount {
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.fund {
+    color: #198754;
+}
+
+.purchase {
+    color: #dc3545;
+}
+
+.empty {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    text-align: center;
+    color: #777;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 78px;
+
+    background: white;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    box-shadow: 0 -5px 20px rgba(0,0,0,.12);
+
+    z-index: 1000;
+}
+
+.bottom-nav div {
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    min-width: 60px;
+}
+
+.bottom-nav .active {
+    color: #1769c2;
+}
+
+.nav-icon {
+    font-size: 21px;
+    line-height: 27px;
+}
+
+/* MOBILE */
+
+@media (max-width: 380px) {
+
+    .wallet-balance h1 {
+        font-size: 32px;
+    }
+
+    .container {
+        padding: 16px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+    <h2>💳 Wallet</h2>
+</div>
+
+
+<div class="container">
+
+    <!-- BALANCE -->
+
+    <div class="wallet-card">
+
+        <div class="wallet-label">
+            Available Balance
+        </div>
+
+        <div class="wallet-balance">
+
+            <h1 id="balance">
+                ₦0.00
+            </h1>
+
+            <button
+                class="refresh-btn"
+                onclick="loadWallet()"
+                title="Refresh Balance">
+                🔄
+            </button>
+
+        </div>
+
+
+        <div class="wallet-actions">
+
+            <button
+                class="wallet-action fund-btn"
+                onclick="location.href='fundwallet.html'">
+                💰 Fund Wallet
+            </button>
+
+            <button
+                class="wallet-action withdraw-btn"
+                onclick="withdrawWallet()">
+                📤 Withdraw
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK LINKS -->
+
+    <div class="quick-links">
+
+        <div
+            class="quick-card"
+            onclick="location.href='buydata.html'">
+
+            <div class="quick-icon">
+                📶
+            </div>
+
+            <div class="quick-title">
+                Buy Data
+            </div>
+
+            <div class="quick-subtitle">
+                Buy data instantly
+            </div>
+
+        </div>
+
+
+        <div
+            class="quick-card"
+            onclick="location.href='history.html'">
+
+            <div class="quick-icon">
+                📜
+            </div>
+
+            <div class="quick-title">
+                History
+            </div>
+
+            <div class="quick-subtitle">
+                View all transactions
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT TRANSACTIONS -->
+
+    <h2 class="section-title">
+        Recent Transactions
+    </h2>
+
+    <div
+        id="transactions"
+        class="transactions">
+
+        <div class="empty">
+            Loading transactions...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+    <div onclick="location.href='index.html'">
+
+        <div class="nav-icon">🏠</div>
+        Home
+
+    </div>
+
+
+    <div class="active">
+
+        <div class="nav-icon">💳</div>
+        Wallet
+
+    </div>
+
+
+    <div onclick="location.href='history.html'">
+
+        <div class="nav-icon">📜</div>
+        History
+
+    </div>
+
+
+    <div onclick="location.href='profile.html'">
+
+        <div class="nav-icon">👤</div>
+        Profile
+
+    </div>
+
+</nav>
+
+
+<script>
+
+const phone =
+    localStorage.getItem("userPhone") ||
+    "09025851659";
+
+
+/* =========================
+   LOAD WALLET BALANCE
+========================= */
+
+async function loadWallet() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:3000/api/wallet?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "WALLET RESPONSE:",
+            result
+        );
+
+        if (
+            result.status === "SUCCESS"
+        ) {
+
+            document.getElementById(
+                "balance"
+            ).textContent =
+                "₦" +
+                Number(result.balance)
+                .toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "WALLET ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   LOAD TRANSACTIONS
+========================= */
+
+async function loadTransactions() {
+
+    const box =
+        document.getElementById(
+            "transactions"
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:3000/api/transactions?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "TRANSACTIONS:",
+            result
+        );
+
+        if (
+            result.status !== "SUCCESS" ||
+            !result.transactions ||
+            result.transactions.length === 0
+        ) {
+
+            box.innerHTML = `
+                <div class="empty">
+                    No transaction yet.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        box.innerHTML = "";
+
+
+        result.transactions
+            .slice(0, 5)
+            .forEach(function(tx) {
+
+                const isFund =
+                    tx.type === "WALLET_FUND";
+
+
+                let title;
+
+
+                if (isFund) {
+
+                    title =
+                        "💰 Wallet Fund";
+
+                } else {
+
+                    title =
+                        "📶 " +
+                        (tx.network || "") +
+                        " - " +
+                        (tx.planName ||
+                         "Data Purchase");
+
+                }
+
+
+                const amount =
+                    Number(tx.amount)
+                    .toLocaleString(
+                        "en-NG",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    );
+
+
+                box.innerHTML += `
+
+                    <div class="transaction-card">
+
+                        <div class="transaction-row">
+
+                            <div>
+
+                                <div class="transaction-name">
+                                    ${title}
+                                </div>
+
+                                <div class="transaction-status">
+                                    ${tx.status || "SUCCESS"}
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="transaction-amount ${
+                                    isFund
+                                    ? "fund"
+                                    : "purchase"
+                                }">
+
+                                ${isFund ? "+" : "-"}₦${amount}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+
+    } catch (error) {
+
+        console.error(
+            "TRANSACTION ERROR:",
+            error
+        );
+
+        box.innerHTML = `
+            <div class="empty">
+                Unable to load transactions.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   WITHDRAW
+========================= */
+
+function withdrawWallet() {
+
+    alert(
+        "Withdraw feature is coming soon."
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadWallet();
+loadTransactions();
+
+</script>
+
+</body>
+</html>

@@ -3,97 +3,647 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSR DATA</title>
+
+<title>BSR DATA - Home</title>
+
 <link rel="stylesheet" href="style.css">
+
+<style>
+
+.home-page{
+    padding:20px 18px 105px;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+    margin-bottom:20px;
+}
+
+.welcome small{
+    color:#777;
+    font-size:15px;
+}
+
+.welcome h1{
+    margin:5px 0 0;
+    font-size:29px;
+}
+
+/* =========================
+   WALLET CARD
+========================= */
+
+.home-wallet{
+    background:linear-gradient(
+        135deg,
+        #1976d2,
+        #0d5fc0
+    );
+
+    color:white;
+    border-radius:25px;
+
+    padding:25px 22px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(25,118,210,.30);
+
+    margin-bottom:22px;
+}
+
+.wallet-title{
+    font-size:17px;
+    opacity:.9;
+}
+
+.home-balance{
+    font-size:40px;
+    font-weight:bold;
+    margin:8px 0 20px;
+}
+
+.wallet-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.wallet-action{
+    border:0;
+    border-radius:15px;
+    padding:14px 8px;
+
+    font-size:15px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.wallet-action.fund{
+    background:#ffd447;
+    color:#111;
+}
+
+.wallet-action.wallet{
+    background:white;
+    color:#1769b0;
+}
+
+/* =========================
+   QUICK SERVICES
+========================= */
+
+.section-title{
+    font-size:23px;
+    margin:25px 0 14px;
+}
+
+.service-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.service-card{
+    background:white;
+    border-radius:20px;
+
+    padding:20px 12px;
+
+    text-align:center;
+
+    box-shadow:
+        0 6px 20px
+        rgba(0,0,0,.08);
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.service-card:active{
+    transform:scale(.97);
+}
+
+.service-icon{
+    font-size:36px;
+    margin-bottom:8px;
+}
+
+.service-card h3{
+    margin:0;
+    font-size:17px;
+    color:#1769b0;
+}
+
+.service-card p{
+    margin:5px 0 0;
+    color:#777;
+    font-size:12px;
+}
+
+/* =========================
+   RECENT TRANSACTIONS
+========================= */
+
+.transaction-card{
+    background:white;
+    border-radius:19px;
+
+    padding:17px;
+
+    margin-bottom:12px;
+
+    box-shadow:
+        0 5px 18px
+        rgba(0,0,0,.07);
+}
+
+.transaction-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+}
+
+.transaction-name{
+    font-weight:bold;
+    font-size:16px;
+}
+
+.transaction-status{
+    color:#248b5b;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.transaction-amount{
+    font-size:18px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.amount-in{
+    color:#16844f;
+}
+
+.amount-out{
+    color:#d9364f;
+}
+
+.view-history{
+    width:100%;
+
+    border:2px solid #1976d2;
+    background:white;
+    color:#1769b0;
+
+    border-radius:15px;
+
+    padding:14px;
+
+    font-size:16px;
+    font-weight:bold;
+
+    margin-top:5px;
+}
+
+/* =========================
+   EMPTY / ERROR
+========================= */
+
+.loading{
+    text-align:center;
+    color:#777;
+    padding:20px;
+}
+
+</style>
 </head>
+
 <body>
 
-<header class="topbar">
-  <div>
-    <h2>BSR DATA</h2>
-    <p>Welcome Back 👋</p>
-  </div>
-
-  <div class="profile">
-    👤
-  </div>
-</header>
-
-<section class="wallet">
-  <small>Wallet Balance</small>
-  <h1>₦0.00</h1>
-
-  <div class="wallet-btns">
-    <button>Fund Wallet</button>
-    <button>Withdraw</button>
-  </div>
-</section>
-
-<h3 class="title">Quick Services</h3>
-
-<section class="menu">
-
-<div class="card">
-📶
-<h3>Buy Data</h3>
+<div class="topbar">
+    <h2>🏠 BSR DATA</h2>
 </div>
 
-<div class="card">
-📞
-<h3>Airtime</h3>
+
+<div class="container home-page">
+
+    <!-- WELCOME -->
+
+    <div class="welcome">
+
+        <small>Welcome back 👋</small>
+
+        <h1>
+            BSR DATA User
+        </h1>
+
+    </div>
+
+
+    <!-- WALLET -->
+
+    <div class="home-wallet">
+
+        <div class="wallet-title">
+            💰 Wallet Balance
+        </div>
+
+        <div
+            class="home-balance"
+            id="walletBalance"
+        >
+            ₦0.00
+        </div>
+
+
+        <div class="wallet-actions">
+
+            <button
+                class="wallet-action fund"
+                onclick="location.href='fundwallet.html'"
+            >
+                💰 Fund Wallet
+            </button>
+
+
+            <button
+                class="wallet-action wallet"
+                onclick="location.href='wallet.html'"
+            >
+                💳 Wallet
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SERVICES -->
+
+    <h2 class="section-title">
+        Quick Services
+    </h2>
+
+
+    <div class="service-grid">
+
+        <div
+            class="service-card"
+            onclick="location.href='buydata.html'"
+        >
+            <div class="service-icon">
+                📶
+            </div>
+
+            <h3>
+                Buy Data
+            </h3>
+
+            <p>
+                MTN • Airtel • Glo • 9mobile
+            </p>
+        </div>
+
+
+        <div
+            class="service-card"
+            onclick="location.href='fundwallet.html'"
+        >
+            <div class="service-icon">
+                💰
+            </div>
+
+            <h3>
+                Fund Wallet
+            </h3>
+
+            <p>
+                Add money to wallet
+            </p>
+        </div>
+
+
+        <div
+            class="service-card"
+            onclick="location.href='history.html'"
+        >
+            <div class="service-icon">
+                📜
+            </div>
+
+            <h3>
+                History
+            </h3>
+
+            <p>
+                View transactions
+            </p>
+        </div>
+
+
+        <div
+            class="service-card"
+            onclick="location.href='profile.html'"
+        >
+            <div class="service-icon">
+                👤
+            </div>
+
+            <h3>
+                Profile
+            </h3>
+
+            <p>
+                Account information
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- RECENT TRANSACTIONS -->
+
+    <h2 class="section-title">
+        Recent Transactions
+    </h2>
+
+
+    <div id="recentTransactions">
+
+        <div class="loading">
+            Loading transactions...
+        </div>
+
+    </div>
+
+
+    <button
+        class="view-history"
+        onclick="location.href='history.html'"
+    >
+        📜 View Full History
+    </button>
+
 </div>
 
-<div class="card">
-⚡
-<h3>Electricity</h3>
-</div>
 
-<div class="card">
-📺
-<h3>Cable TV</h3>
-</div>
-
-<div class="card">
-🎓
-<h3>WAEC</h3>
-</div>
-
-<div class="card">
-📝
-<h3>JAMB</h3>
-</div>
-
-<div class="card">
-💰
-<h3>Fund Wallet</h3>
-</div>
-
-<div class="card">
-📜
-<h3>History</h3>
-</div>
-
-</section>
-
-<h3 class="title">Recent Transactions</h3>
-
-<div class="transaction">
-No transaction yet.
-</div>
+<!-- BOTTOM NAV -->
 
 <nav class="bottom-nav">
 
-<div>🏠<br>Home</div>
+    <div onclick="location.href='index.html'">
+        🏠
+        <br>
+        Home
+    </div>
 
-<div>💳<br>Wallet</div>
 
-<div>📜<br>History</div>
+    <div onclick="location.href='wallet.html'">
+        💳
+        <br>
+        Wallet
+    </div>
 
-<div>👤<br>Profile</div>
+
+    <div onclick="location.href='history.html'">
+        📜
+        <br>
+        History
+    </div>
+
+
+    <div onclick="location.href='profile.html'">
+        👤
+        <br>
+        Profile
+    </div>
 
 </nav>
 
-<script src="script.js"></script>
+
+<script>
+
+const API =
+    "http://127.0.0.1:3000";
+
+
+const phone =
+    localStorage.getItem("userPhone") ||
+    "09025851659";
+
+
+/* =========================
+   WALLET BALANCE
+========================= */
+
+async function loadWallet(){
+
+    try{
+
+        const response =
+            await fetch(
+                API +
+                "/api/wallet?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "HOME WALLET:",
+            result
+        );
+
+
+        if(
+            result.status === "SUCCESS"
+        ){
+
+            document.getElementById(
+                "walletBalance"
+            ).textContent =
+                "₦" +
+                Number(
+                    result.balance
+                ).toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits:2,
+                        maximumFractionDigits:2
+                    }
+                );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "HOME WALLET ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   RECENT TRANSACTIONS
+========================= */
+
+async function loadRecentTransactions(){
+
+    const container =
+        document.getElementById(
+            "recentTransactions"
+        );
+
+
+    try{
+
+        const response =
+            await fetch(
+                API +
+                "/api/transactions?phone=" +
+                encodeURIComponent(phone)
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "HOME TRANSACTIONS:",
+            result
+        );
+
+
+        if(
+            result.status !== "SUCCESS" ||
+            !result.transactions ||
+            result.transactions.length === 0
+        ){
+
+            container.innerHTML =
+                '<div class="loading">No transactions yet.</div>';
+
+            return;
+
+        }
+
+
+        const recent =
+            result.transactions.slice(0,4);
+
+
+        container.innerHTML =
+            recent.map(tx => {
+
+                const amount =
+                    Number(
+                        tx.amount
+                    ).toLocaleString(
+                        "en-NG",
+                        {
+                            minimumFractionDigits:2,
+                            maximumFractionDigits:2
+                        }
+                    );
+
+
+                const isFund =
+                    tx.type === "WALLET_FUND";
+
+
+                const name =
+                    isFund
+                    ? "💰 Wallet Fund"
+                    : "📶 " +
+                      tx.network +
+                      " - " +
+                      tx.planName;
+
+
+                const sign =
+                    isFund
+                    ? "+"
+                    : "-";
+
+
+                const amountClass =
+                    isFund
+                    ? "amount-in"
+                    : "amount-out";
+
+
+                return `
+
+                <div class="transaction-card">
+
+                    <div class="transaction-row">
+
+                        <div>
+
+                            <div class="transaction-name">
+                                ${name}
+                            </div>
+
+                            <div class="transaction-status">
+                                ${tx.status}
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="transaction-amount ${amountClass}"
+                        >
+                            ${sign}₦${amount}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }).join("");
+
+
+    }catch(error){
+
+        console.error(
+            "HOME HISTORY ERROR:",
+            error
+        );
+
+
+        container.innerHTML =
+            '<div class="loading">Unable to load transactions.</div>';
+
+    }
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadWallet();
+
+loadRecentTransactions();
+
+</script>
 
 </body>
 </html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BSR DATA - Profile</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.profile-page{
+    padding:20px 18px 100px;
+}
+
+.profile-card{
+    background:#fff;
+    border-radius:24px;
+    padding:25px 20px;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,.10);
+    margin-bottom:20px;
+}
+
+.profile-avatar{
+    width:100px;
+    height:100px;
+    margin:auto;
+    border-radius:50%;
+    background:#1976d2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    box-shadow:0 6px 18px rgba(25,118,210,.30);
+}
+
+.profile-card h1{
+    margin:15px 0 5px;
+    font-size:27px;
+}
+
+.user-phone{
+    color:#666;
+    font-size:16px;
+}
+
+.info-card{
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+
+.info-title{
+    color:#666;
+    font-size:15px;
+    margin-bottom:7px;
+}
+
+.phone-number{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.balance-card{
+    background:linear-gradient(135deg,#1976d2,#0d5fc0);
+    color:white;
+    border-radius:24px;
+    padding:25px 20px;
+    margin-bottom:22px;
+    box-shadow:0 10px 25px rgba(25,118,210,.28);
+}
+
+.balance-label{
+    font-size:17px;
+    opacity:.9;
+}
+
+.balance{
+    font-size:38px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.action-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.action-btn{
+    border:0;
+    border-radius:17px;
+    padding:18px 10px;
+    font-size:16px;
+    font-weight:bold;
+    background:#f4f7fb;
+    color:#1769b0;
+    box-shadow:0 4px 12px rgba(0,0,0,.07);
+    cursor:pointer;
+}
+
+.action-btn span{
+    display:block;
+    font-size:29px;
+    margin-bottom:7px;
+}
+
+.action-btn.fund{
+    background:#ffd447;
+    color:#111;
+}
+
+.action-btn.data{
+    background:#1976d2;
+    color:#fff;
+}
+
+.action-btn.history{
+    background:#fff;
+    border:2px solid #1976d2;
+}
+
+.section-title{
+    font-size:23px;
+    margin:25px 0 12px;
+}
+
+.bottom-nav div{
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h2>👤 Profile</h2>
+</div>
+
+<div class="container profile-page">
+
+    <div class="profile-card">
+
+        <div class="profile-avatar">
+            👤
+        </div>
+
+        <h1>BSR DATA User</h1>
+
+        <div class="user-phone">
+            📱 <span id="profilePhone">Loading...</span>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="info-title">
+            📱 Phone Number
+        </div>
+
+        <div class="phone-number" id="phoneNumber">
+            Loading...
+        </div>
+
+    </div>
+
+
+    <div class="balance-card">
+
+        <div class="balance-label">
+            💰 Wallet Balance
+        </div>
+
+        <div class="balance" id="walletBalance">
+            ₦0.00
+        </div>
+
+    </div>
+
+
+    <h2 class="section-title">
+        Quick Actions
+    </h2>
+
+
+    <div class="action-grid">
+
+        <button
+            class="action-btn"
+            onclick="location.href='wallet.html'"
+        >
+            <span>💳</span>
+            Wallet
+        </button>
+
+
+        <button
+            class="action-btn fund"
+            onclick="location.href='fundwallet.html'"
+        >
+            <span>💰</span>
+            Fund Wallet
+        </button>
+
+
+        <button
+            class="action-btn data"
+            onclick="location.href='buydata.html'"
+        >
+            <span>📶</span>
+            Buy Data
+        </button>
+
+
+        <button
+            class="action-btn history"
+            onclick="location.href='history.html'"
+        >
+            <span>📜</span>
+            History
+        </button>
+
+    </div>
+
+</div>
+
+
+<nav class="bottom-nav">
+
+    <div onclick="location.href='index.html'">
+        🏠
+        <br>
+        Home
+    </div>
+
+    <div onclick="location.href='wallet.html'">
+        💳
+        <br>
+        Wallet
+    </div>
+
+    <div onclick="location.href='history.html'">
+        📜
+        <br>
+        History
+    </div>
+
+    <div onclick="location.href='profile.html'">
+        👤
+        <br>
+        Profile
+    </div>
+
+</nav>
+
+
+<script>
+
+const API = "http://127.0.0.1:3000";
+
+const phone =
+    localStorage.getItem("userPhone") ||
+    "09025851659";
+
+
+document.getElementById("profilePhone").textContent =
+    phone;
+
+document.getElementById("phoneNumber").textContent =
+    phone;
+
+
+async function loadWalletBalance(){
+
+    try{
+
+        const response =
+            await fetch(
+                API +
+                "/api/wallet?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        const result =
+            await response.json();
+
+        console.log("PROFILE WALLET:", result);
+
+        if(result.status === "SUCCESS"){
+
+            document.getElementById(
+                "walletBalance"
+            ).textContent =
+                "₦" +
+                Number(result.balance).toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits:2,
+                        maximumFractionDigits:2
+                    }
+                );
+
+        }else{
+
+            document.getElementById(
+                "walletBalance"
+            ).textContent =
+                "₦0.00";
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "PROFILE WALLET ERROR:",
+            error
+        );
+
+        document.getElementById(
+            "walletBalance"
+        ).textContent =
+            "₦0.00";
+    }
+
+}
+
+
+loadWalletBalance();
+
+</script>
+
+</body>
+</html>

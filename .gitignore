@@ -1,2 +1,22 @@
 node_modules/
 .env
+
+# Private/local application data
+data/
+server.log
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local backups
+backup/
+*.backup
+*.before-*
+*.profile-css
+
+# Test/local files
+plans-test.json
+
+# Additional local backups
+*.backup2

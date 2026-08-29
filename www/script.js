@@ -438,3 +438,193 @@ async function buyData() {
   }
 
 }
+// ===============================
+// LOAD RECENT TRANSACTIONS
+// ===============================
+
+async function loadRecentTransactions() {
+
+    const container =
+        document.getElementById("recentTransactions");
+
+    if (!container) {
+        return;
+    }
+
+    const phone = "09025851659";
+
+    try {
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:3000/api/transactions?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "TRANSACTIONS RESPONSE:",
+            result
+        );
+
+        if (
+            result.status !== "SUCCESS" ||
+            !Array.isArray(result.transactions)
+        ) {
+
+            container.innerHTML =
+                "<div>No transaction yet.</div>";
+
+            return;
+        }
+
+        const transactions =
+            result.transactions.slice(0, 5);
+
+        if (!transactions.length) {
+
+            container.innerHTML =
+                "<div>No transaction yet.</div>";
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        transactions.forEach(tx => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "transaction-item";
+
+            let title = "Transaction";
+
+            if (tx.type === "DATA_PURCHASE") {
+
+                title =
+                    "📶 " +
+                    (tx.network || "") +
+                    " - " +
+                    (tx.planName || "Data Purchase");
+
+            } else if (
+                tx.type === "WALLET_FUND"
+            ) {
+
+                title =
+                    "💰 Wallet Fund";
+            }
+
+            item.innerHTML = `
+                <div>
+                    <strong>${title}</strong>
+                    <br>
+                    <small>
+                        ${tx.status || "UNKNOWN"}
+                    </small>
+                </div>
+
+                <div>
+                    ₦${Number(tx.amount || 0)
+                        .toLocaleString("en-NG", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
+                </div>
+            `;
+
+            container.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "TRANSACTIONS LOAD ERROR:",
+            error
+        );
+
+        container.innerHTML =
+            "<div>Unable to load transactions.</div>";
+    }
+}
+// ===============================
+// LOAD BSR DATA WALLET BALANCE
+// ===============================
+
+async function loadWalletBalance() {
+
+    const walletBalance =
+        document.getElementById("walletBalance");
+
+    if (!walletBalance) {
+        return;
+    }
+
+const phone = "09025851659";
+
+console.log("BSR WALLET PHONE:", phone);
+
+    try {
+
+const response =
+    await fetch(
+        "http://127.0.0.1:3000/api/wallet?phone=" +
+        encodeURIComponent(phone) +
+        "&t=" +
+        Date.now(),
+        {
+            cache: "no-store"
+        }
+    );
+
+        const result =
+            await response.json();
+
+        console.log(
+            "WALLET RESPONSE:",
+            result
+        );
+
+        if (
+            result.status === "SUCCESS"
+        ) {
+
+            walletBalance.textContent =
+                "₦" +
+                Number(result.balance)
+                    .toLocaleString(
+                        "en-NG",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    );
+
+        } else {
+
+            walletBalance.textContent =
+                "₦0.00";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "WALLET LOAD ERROR:",
+            error
+        );
+
+        walletBalance.textContent =
+            "₦0.00";
+    }
+}
+
+
+// Load wallet when page opens
+loadWalletBalance();
+loadRecentTransactions();

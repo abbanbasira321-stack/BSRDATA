@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BSR DATA — Admin Dashboard</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f1f5f9;
+  color:#172033;
+}
+.header{
+  background:linear-gradient(135deg,#0755c9,#1769c2);
+  color:white;
+  padding:25px 18px;
+  border-radius:0 0 28px 28px;
+}
+.header h1{margin:0;font-size:26px}
+.header p{margin:7px 0 0;opacity:.85}
+
+.container{padding:18px;max-width:1100px;margin:auto}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-bottom:20px;
+}
+.card{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 5px 18px #0001;
+}
+.stat-title{color:#718096;font-size:13px}
+.stat{
+  font-size:25px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.section{
+  margin-top:22px;
+  margin-bottom:12px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+button{
+  border:0;
+  border-radius:13px;
+  padding:13px 17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.refresh{
+  background:#1769c2;
+  color:white;
+  width:100%;
+}
+.approve{
+  background:#198754;
+  color:white;
+  width:100%;
+  margin-top:12px;
+}
+.search{
+  width:100%;
+  border:1px solid #ddd;
+  border-radius:13px;
+  padding:14px;
+  font-size:15px;
+  margin-bottom:14px;
+}
+
+.payment{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 5px 18px #0001;
+  border-left:5px solid #f0ad00;
+}
+.payment.approved{border-left-color:#198754}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin:8px 0;
+}
+.label{color:#718096}
+.amount{
+  font-size:25px;
+  font-weight:bold;
+  margin:12px 0;
+}
+.badge{
+  display:inline-block;
+  padding:6px 11px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+.pending{background:#fff3cd;color:#856404}
+.ok{background:#d1e7dd;color:#0f5132}
+
+.transaction{
+  padding:13px 0;
+  border-bottom:1px solid #eee;
+}
+
+.status{
+  padding:14px;
+  background:white;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+
+@media(min-width:700px){
+  .grid{grid-template-columns:repeat(4,1fr)}
+}
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #071b46, #1769c2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  background: white;
+  border-radius: 25px;
+  padding: 30px 22px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+}
+
+.login-box h2 {
+  margin-top: 0;
+  color: #1769c2;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 18px;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: #1769c2;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+#loginMsg {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* ===============================
+   USER PROFILE CARD
+================================ */
+
+.user-profile {
+  background: linear-gradient(145deg, #071b46, #0d2d6b);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 20px;
+  color: #fff;
+  box-shadow: 0 12px 35px rgba(0,0,0,.25);
+  overflow: hidden;
+  position: relative;
+}
+
+.user-profile::before {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  top: -90px;
+  right: -60px;
+}
+
+.user-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.user-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.15);
+  font-size: 32px;
+  border: 2px solid rgba(255,255,255,.35);
+  flex-shrink: 0;
+}
+
+.user-profile-name {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.user-profile-phone {
+  margin-top: 4px;
+  opacity: .8;
+  font-size: 14px;
+}
+
+.user-balance {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.10);
+  position: relative;
+}
+
+.user-balance-label {
+  font-size: 13px;
+  opacity: .8;
+}
+
+.user-balance-value {
+  font-size: 30px;
+  font-weight: 900;
+  margin-top: 5px;
+}
+
+.user-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.user-stat {
+  background: rgba(255,255,255,.09);
+  padding: 13px;
+  border-radius: 14px;
+}
+
+.user-stat-label {
+  font-size: 12px;
+  opacity: .75;
+}
+
+.user-stat-value {
+  margin-top: 5px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.user-profile-created {
+  margin-top: 14px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+.user-profile-close {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.user-profile-close:active {
+  transform: scale(.98);
+}
+
+.user-profile-transactions {
+  margin-top: 16px;
+}
+
+.user-profile-transactions-title {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loginScreen">
+
+  <div class="login-box">
+
+    <h2>🔐 BSR DATA ADMIN</h2>
+
+    <p>Shigar da Admin PIN</p>
+
+    <input
+      type="password"
+      id="adminPin"
+      placeholder="Enter Admin PIN"
+      inputmode="numeric"
+    >
+
+    <button onclick="adminLogin()">
+      🔓 LOGIN
+    </button>
+
+    <div id="loginMsg"></div>
+
+  </div>
+
+</div>
+<button onclick="adminLogout()">
+  🚪 LOGOUT
+</button>
+<div class="header">
+  <h1>🔐 BSR DATA ADMIN</h1>
+  <p>Complete Administration Dashboard</p>
+</div>
+
+<div class="container">
+
+<div class="status">
+  <strong>System:</strong>
+  <span id="systemStatus">Checking...</span>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="stat-title">💰 Pending Payments</div>
+<div class="stat" id="pending">0</div>
+<div class="card">
+  <div class="stat-title">👥 Total Users</div>
+  <div class="stat" id="totalUsers">0</div>
+</div>
+</div>
+
+<div class="card">
+<div class="stat-title">✅ Approved Payments</div>
+<div class="stat" id="approved">0</div>
+</div>
+
+<div class="card">
+<div class="stat-title">💵 Total Funded</div>
+<div class="stat" id="funded">₦0</div>
+</div>
+
+<div class="card">
+<div class="stat-title">📜 Transactions</div>
+<div class="stat" id="transactions">0</div>
+</div>
+
+</div>
+
+<button class="refresh" onclick="loadDashboard()">
+🔄 REFRESH DASHBOARD
+</button>
+
+<div class="section">💳 Payment Management</div>
+
+<input
+ class="search"
+ id="search"
+ placeholder="🔎 Search phone, reference or payment ID..."
+ oninput="renderPayments()"
+>
+
+<div id="payments">
+<div class="card">⏳ Loading payments...</div>
+</div>
+
+<div class="section">📜 Recent Transactions</div>
+
+<input
+  class="search"
+  id="transactionSearch"
+  placeholder="🔎 Search phone, reference, request ID or type..."
+  oninput="renderTransactions()"
+>
+
+<div class="card" id="transactionList">
+  ⏳ Loading transactions...
+</div>
+
+
+<div class="section">👥 Users Management</div>
+<div id="userDetailsSection" style="display:none;">
+
+  <div class="section">👤 Cikakken Bayanin User</div>
+
+  <div class="card" id="userDetails">
+    Zaɓi wani user domin ganin cikakken bayaninsa.
+  </div>
+
+</div>
+
+<input
+  class="search"
+  id="userSearch"
+  placeholder="🔎 Search user phone..."
+  oninput="renderUsers()"
+>
+
+<div id="userList">
+  <div class="card">⏳ Loading users...</div>
+</div>
+
+</div>
+
+<script>
+
+let payments=[];
+let transactions=[];
+let users=[];
+
+async function api(url,options={}){
+  const response=await fetch(url,options);
+  const data=await response.json();
+
+  if(!response.ok){
+    throw new Error(data.message || "API request failed");
+  }
+
+  return data;
+}
+
+async function loadDashboard(){
+
+  document.getElementById("systemStatus").textContent="🟡 Loading...";
+
+  try{
+
+    const paymentResult =
+      await api("/api/admin/payments");
+
+    payments =
+      paymentResult.payments || [];
+
+    const transactionResult =
+await api("/api/admin/transactions");
+
+    transactions =
+      transactionResult.transactions || [];
+
+const userResult =
+  await api("/api/admin/users");
+
+users =
+  userResult.users || [];
+
+updateStats();
+renderPayments();
+renderTransactions();
+renderUsers();
+
+    document.getElementById("systemStatus").textContent =
+      "🟢 ONLINE";
+
+  }catch(error){
+
+    console.error(error);
+
+    document.getElementById("systemStatus").textContent =
+      "🔴 ERROR";
+
+    document.getElementById("payments").innerHTML =
+      `<div class="card">
+        ❌ ${escapeHtml(error.message)}
+      </div>`;
+  }
+}
+
+function updateStats(){
+
+  const pending =
+    payments.filter(p=>p.status==="PENDING");
+
+  const approved =
+    payments.filter(p=>p.status==="APPROVED");
+
+  const funded =
+    approved.reduce(
+      (sum,p)=>sum+Number(p.amount||0),
+      0
+    );
+
+  document.getElementById("pending").textContent =
+    pending.length;
+
+  document.getElementById("approved").textContent =
+    approved.length;
+
+  document.getElementById("funded").textContent =
+    "₦"+funded.toLocaleString("en-NG");
+
+  document.getElementById("transactions").textContent =
+    transactions.length;
+}
+document.getElementById("totalUsers").textContent =
+  users.length;
+
+function renderPayments(){
+
+  const container =
+    document.getElementById("payments");
+
+  const search =
+    document.getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const filtered =
+    payments
+    .filter(p=>{
+
+      const text =
+        `${p.phone||""}
+         ${p.userPhone||""}
+         ${p.reference||""}
+         ${p.id||""}`
+        .toLowerCase();
+
+      return text.includes(search);
+    })
+    .slice()
+    .reverse();
+
+  if(!filtered.length){
+
+    container.innerHTML =
+      `<div class="card">
+        No payments found.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML="";
+
+  filtered.forEach(payment=>{
+
+    const phone =
+      payment.phone ||
+      payment.userPhone ||
+      "N/A";
+
+    const isPending =
+      payment.status==="PENDING";
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "payment "+(isPending?"":"approved");
+
+    card.innerHTML=`
+
+      <div class="row">
+        <span class="label">📱 Phone</span>
+        <strong>${escapeHtml(phone)}</strong>
+      </div>
+
+      <div class="amount">
+        ₦${Number(payment.amount||0)
+          .toLocaleString("en-NG")}
+      </div>
+
+      <div class="row">
+        <span class="label">🏦 Bank</span>
+        <strong>${escapeHtml(payment.bank||"N/A")}</strong>
+      </div>
+
+      <div class="row">
+        <span class="label">👤 Account</span>
+        <strong>${escapeHtml(payment.accountName||"N/A")}</strong>
+      </div>
+
+      <div class="row">
+        <span class="label">🔢 Reference</span>
+        <strong>${escapeHtml(payment.reference||"N/A")}</strong>
+      </div>
+
+      <div class="row">
+        <span class="label">🆔 Payment ID</span>
+        <small>${escapeHtml(payment.id||"N/A")}</small>
+      </div>
+
+      <div style="margin-top:12px">
+        <span class="badge ${isPending?"pending":"ok"}">
+          ${escapeHtml(payment.status)}
+        </span>
+      </div>
+
+      ${
+        isPending
+        ?
+        `<button
+          class="approve"
+          onclick="approvePayment(
+            '${escapeAttr(payment.id)}',
+            '${escapeAttr(phone)}',
+            this
+          )">
+          ✅ APPROVE & FUND WALLET
+        </button>`
+        :
+        ""
+      }
+
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+async function approvePayment(
+  paymentID,
+  phone,
+  button
+){
+
+  if(!confirm(
+    "Approve this payment and add the money to the wallet?"
+  )){
+    return;
+  }
+
+  button.disabled=true;
+  button.textContent="⏳ APPROVING...";
+
+  try{
+
+    const result =
+      await api(
+        "/api/admin/approve-payment",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            paymentID,
+            phone
+          })
+        }
+      );
+
+    alert(
+      "✅ Payment approved!\n\n"+
+      "Phone: "+result.phone+
+      "\nNew Balance: ₦"+
+      result.balance
+    );
+
+    await loadDashboard();
+
+  }catch(error){
+
+    alert(
+      "❌ Approval failed\n\n"+
+      error.message
+    );
+
+    button.disabled=false;
+    button.textContent=
+      "✅ APPROVE & FUND WALLET";
+  }
+}
+
+function renderTransactions(){
+
+  const container =
+    document.getElementById(
+      "transactionList"
+    );
+
+const search =
+  document.getElementById(
+    "transactionSearch"
+  ).value
+   .toLowerCase()
+   .trim();
+
+const filteredTransactions =
+  transactions.filter(tx => {
+    const text =
+      `${tx.phone || ""}
+       ${tx.reference || ""}
+       ${tx.requestID || ""}
+       ${tx.type || ""}`
+      .toLowerCase();
+
+    return text.includes(search);
+  });
+if(!filteredTransactions.length){
+
+    container.innerHTML=
+      "No transactions found.";
+
+    return;
+  }
+
+  container.innerHTML =
+filteredTransactions
+  .slice()
+    .reverse()
+    .slice(0,20)
+    .map(tx=>`
+
+      <div class="transaction">
+
+        <div class="row">
+          <strong>
+            ${escapeHtml(tx.type||"TRANSACTION")}
+          </strong>
+
+          <strong>
+            ₦${Number(tx.amount||0)
+              .toLocaleString("en-NG")}
+          </strong>
+        </div>
+
+        <div class="row">
+          <span class="label">📱 Phone</span>
+          <span>${escapeHtml(tx.phone||"N/A")}</span>
+        </div>
+
+        <div class="row">
+          <span class="label">🔢 Reference</span>
+          <span>${escapeHtml(tx.reference || tx.requestID || "N/A")}</span>
+        </div>
+
+<small class="label">
+  📅 ${formatDate(tx.createdAt)}
+</small>
+
+      </div>
+
+    `)
+    .join("");
+}
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function escapeAttr(value){
+  return escapeHtml(value)
+    .replaceAll("`","&#096;");
+}
+
+function showDashboard(){
+  document.getElementById("loginScreen").style.display = "none";
+  loadDashboard();
+}
+
+async function adminLogin(){
+  const pinInput = document.getElementById("adminPin");
+  const loginMsg = document.getElementById("loginMsg");
+
+  const pin = pinInput.value.trim();
+
+  if(!pin){
+    loginMsg.textContent = "❌ Shigar da Admin PIN.";
+    loginMsg.style.color = "#dc3545";
+    return;
+  }
+
+  loginMsg.textContent = "⏳ Ana shiga...";
+  loginMsg.style.color = "#1769c2";
+
+  try{
+    const response = await fetch(
+      "/api/admin/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          pin: pin
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if(
+      !response.ok ||
+      result.status !== "SUCCESS"
+    ){
+      throw new Error(
+        result.message ||
+        "Invalid Admin PIN"
+      );
+    }
+
+    sessionStorage.setItem(
+      "bsrAdminLoggedIn",
+      "true"
+    );
+
+    loginMsg.textContent =
+      "✅ Login successful!";
+
+    loginMsg.style.color =
+      "#198754";
+
+    setTimeout(
+      showDashboard,
+      500
+    );
+
+  }catch(error){
+
+    console.error(
+      "ADMIN LOGIN ERROR:",
+      error
+    );
+
+    loginMsg.textContent =
+      "❌ " + error.message;
+
+    loginMsg.style.color =
+      "#dc3545";
+  }
+}
+
+function adminLogout(){
+
+  const confirmLogout = confirm(
+    "Kana son fita daga Admin Dashboard?"
+  );
+
+  if(!confirmLogout){
+    return;
+  }
+
+  sessionStorage.removeItem(
+    "bsrAdminLoggedIn"
+  );
+
+  document.getElementById(
+    "adminPin"
+  ).value = "";
+
+  document.getElementById(
+    "loginMsg"
+  ).textContent = "";
+
+  document.getElementById(
+    "loginScreen"
+  ).style.display = "flex";
+}
+
+document.getElementById(
+  "adminPin"
+).addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Enter"){
+      adminLogin();
+    }
+
+  }
+);
+
+if(
+  sessionStorage.getItem(
+    "bsrAdminLoggedIn"
+  ) === "true"
+){
+
+  showDashboard();
+
+}else{
+
+  document.getElementById(
+    "loginScreen"
+  ).style.display = "flex";
+}
+function renderUsers(){
+
+  const container =
+    document.getElementById("userList");
+
+  const search =
+    document.getElementById("userSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const filteredUsers =
+    users.filter(user => {
+
+      const text =
+        `${user.phone || ""}`
+        .toLowerCase();
+
+      return text.includes(search);
+
+    });
+
+  if(!filteredUsers.length){
+
+    container.innerHTML =
+      `<div class="card">
+        No users found.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML = "";
+
+  filteredUsers.forEach(user => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "payment approved";
+
+    card.innerHTML = `
+
+      <div class="row">
+        <span class="label">📱 Phone</span>
+        <strong>${escapeHtml(user.phone || "N/A")}</strong>
+      </div>
+
+      <div class="amount">
+        💰 ₦${Number(user.balance || 0)
+          .toLocaleString("en-NG")}
+      </div>
+
+      <div class="row">
+        <span class="label">💵 Total Funded</span>
+        <strong>
+          ₦${Number(user.totalFunded || 0)
+            .toLocaleString("en-NG")}
+        </strong>
+      </div>
+
+      <div class="row">
+        <span class="label">🛒 Total Spent</span>
+        <strong>
+          ₦${Number(user.totalSpent || 0)
+            .toLocaleString("en-NG")}
+        </strong>
+      </div>
+
+      <div class="row">
+        <span class="label">📜 Transactions</span>
+        <strong>
+          ${Number(user.totalTransactions || 0)}
+        </strong>
+      </div>
+
+      <div class="row">
+        <span class="label">📅 Account Created</span>
+        <small>
+          ${formatDate(user.createdAt)}
+        </small>
+      </div>
+
+      <button
+        class="approve"
+        onclick="showUserDetails('${escapeAttr(user.phone)}')"
+      >
+        👤 DUBA CIKAKKEN BAYANIN USER
+      </button>
+
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}
+function formatDate(dateString){
+  if(!dateString) return "N/A";
+
+  const date = new Date(dateString);
+
+  if(isNaN(date.getTime())){
+    return dateString;
+  }
+
+  return date.toLocaleString("en-NG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+function showUserDetails(phone){
+
+  const user = users.find(
+    user => String(user.phone).trim() === String(phone).trim()
+  );
+
+  if(!user){
+    alert("Ba a sami user ba.");
+    return;
+  }
+
+  const userTransactions =
+    transactions
+      .filter(tx => {
+        const txPhone =
+          tx.phone ||
+          tx.userPhone ||
+          tx.phoneNumber ||
+          "";
+
+        return String(txPhone).trim() === String(phone).trim();
+      })
+      .slice()
+      .sort(
+        (a,b) =>
+          new Date(b.createdAt || 0) -
+          new Date(a.createdAt || 0)
+      );
+
+  const transactionHtml =
+    userTransactions.length
+      ? userTransactions.map(tx => {
+
+          const isDataPurchase =
+            tx.type === "DATA_PURCHASE";
+
+          const isWalletFund =
+            tx.type === "WALLET_FUND";
+
+          return `
+            <div class="transaction">
+
+              <div class="row">
+                <strong>
+                  ${escapeHtml(tx.type || "TRANSACTION")}
+                </strong>
+
+                <strong>
+                  ₦${Number(tx.amount || 0)
+                    .toLocaleString("en-NG")}
+                </strong>
+              </div>
+
+              <div class="row">
+                <span class="label">Matsayi</span>
+                <span>
+                  ${escapeHtml(tx.status || "N/A")}
+                </span>
+              </div>
+
+              ${
+                isDataPurchase
+                ?
+                `
+                <div class="row">
+                  <span class="label">📡 Network</span>
+                  <span>
+                    ${escapeHtml(tx.network || "N/A")}
+                  </span>
+                </div>
+
+                <div class="row">
+                  <span class="label">📦 Plan</span>
+                  <span>
+                    ${escapeHtml(
+                      tx.planName ||
+                      tx.plan ||
+                      "N/A"
+                    )}
+                  </span>
+                </div>
+
+                <div class="row">
+                  <span class="label">🆔 Request ID</span>
+                  <small>
+                    ${escapeHtml(
+                      tx.requestID ||
+                      tx.requestId ||
+                      "N/A"
+                    )}
+                  </small>
+                </div>
+                `
+                :
+                ""
+              }
+
+              ${
+                isWalletFund
+                ?
+                `
+                <div class="row">
+                  <span class="label">🔖 Reference</span>
+                  <small>
+                    ${escapeHtml(
+                      tx.reference ||
+                      "N/A"
+                    )}
+                  </small>
+                </div>
+
+                <div class="row">
+                  <span class="label">🆔 Payment ID</span>
+                  <small>
+                    ${escapeHtml(
+                      tx.paymentID ||
+                      tx.paymentId ||
+                      tx.id ||
+                      "N/A"
+                    )}
+                  </small>
+                </div>
+                `
+                :
+                `
+                <div class="row">
+                  <span class="label">🔖 Reference</span>
+                  <small>
+                    ${escapeHtml(
+                      tx.reference ||
+                      tx.requestID ||
+                      tx.requestId ||
+                      tx.transactionId ||
+                      tx.id ||
+                      "N/A"
+                    )}
+                  </small>
+                </div>
+                `
+              }
+
+              <small class="label">
+                📅 ${formatDate(tx.createdAt)}
+              </small>
+
+            </div>
+          `;
+
+        }).join("")
+      : `
+        <div class="transaction">
+          Ba a sami wani transaction na wannan user ba.
+        </div>
+      `;
+
+  document.getElementById("userDetails").innerHTML = `
+
+    <div class="user-profile">
+
+      <div class="user-profile-header">
+
+        <div class="user-avatar">
+          👤
+        </div>
+
+        <div>
+          <div class="user-profile-name">
+            BSR DATA USER
+          </div>
+
+          <div class="user-profile-phone">
+            📱 ${escapeHtml(user.phone)}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="user-balance">
+
+        <div class="user-balance-label">
+          WALLET BALANCE
+        </div>
+
+        <div class="user-balance-value">
+          ₦${Number(user.balance || 0)
+            .toLocaleString("en-NG")}
+        </div>
+
+      </div>
+
+      <div class="user-profile-stats">
+
+        <div class="user-stat">
+          <div class="user-stat-label">
+            💵 TOTAL FUNDED
+          </div>
+
+          <div class="user-stat-value">
+            ₦${Number(user.totalFunded || 0)
+              .toLocaleString("en-NG")}
+          </div>
+        </div>
+
+        <div class="user-stat">
+          <div class="user-stat-label">
+            🛒 TOTAL SPENT
+          </div>
+
+          <div class="user-stat-value">
+            ₦${Number(user.totalSpent || 0)
+              .toLocaleString("en-NG")}
+          </div>
+        </div>
+
+        <div class="user-stat">
+          <div class="user-stat-label">
+            📜 TRANSACTIONS
+          </div>
+
+          <div class="user-stat-value">
+            ${Number(user.totalTransactions || 0)}
+          </div>
+        </div>
+
+        <div class="user-stat">
+          <div class="user-stat-label">
+            📅 CREATED
+          </div>
+
+          <div class="user-stat-value">
+            ${formatDate(user.createdAt)}
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        class="user-profile-close"
+        onclick="document.getElementById('userDetailsSection').style.display='none'"
+      >
+        ✖️ RUFE PROFILE
+      </button>
+
+    </div>
+
+    <div class="user-profile-transactions">
+
+      <div class="user-profile-transactions-title">
+        📜 TRANSACTION HISTORY (${userTransactions.length})
+      </div>
+
+      ${transactionHtml}
+
+    </div>
+
+  `;
+
+  document.getElementById(
+    "userDetailsSection"
+  ).style.display = "block";
+
+  document.getElementById(
+    "userDetailsSection"
+  ).scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>

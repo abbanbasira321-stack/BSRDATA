@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSR DATA - History</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.history-card {
+    background: white;
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.history-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.history-title {
+    font-weight: bold;
+}
+
+.history-amount {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+}
+
+.history-info {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.history-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h2>📜 History</h2>
+</div>
+
+<div class="container">
+
+    <div id="historyList">
+        <div class="history-empty">
+            Loading transactions...
+        </div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+
+<div onclick="location.href='index.html'">
+🏠<br>Home
+</div>
+
+<div onclick="location.href='wallet.html'">
+💳<br>Wallet
+</div>
+
+<div>
+📜<br>History
+</div>
+
+<div>
+👤<br>Profile
+</div>
+
+</nav>
+
+<script>
+
+const API = "http://127.0.0.1:3000";
+
+const phone =
+    localStorage.getItem("userPhone") ||
+    "09025851659";
+
+const historyList =
+    document.getElementById("historyList");
+
+
+function formatAmount(amount) {
+
+    return Number(amount).toLocaleString(
+        "en-NG",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+function formatDate(date) {
+
+    return new Date(date).toLocaleString(
+        "en-NG",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    );
+
+}
+
+
+async function loadHistory() {
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/api/transactions?phone=" +
+                encodeURIComponent(phone)
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "HTTP " + response.status
+            );
+        }
+
+        const result =
+            await response.json();
+
+        console.log(
+            "HISTORY RESPONSE:",
+            result
+        );
+
+
+        if (
+            result.status !== "SUCCESS" ||
+            !Array.isArray(result.transactions) ||
+            result.transactions.length === 0
+        ) {
+
+            historyList.innerHTML = `
+                <div class="history-empty">
+                    📭<br>
+                    No transaction yet.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        historyList.innerHTML =
+            result.transactions.map(tx => {
+
+                const amount =
+                    formatAmount(tx.amount);
+
+                const date =
+                    formatDate(tx.createdAt);
+
+
+                if (
+                    tx.type ===
+                    "DATA_PURCHASE"
+                ) {
+
+                    return `
+                    <div class="history-card">
+
+                        <div class="history-top">
+
+                            <div class="history-title">
+                                📶 ${tx.network}
+                                <br>
+                                <small>
+                                ${tx.planName || "Data Purchase"}
+                                </small>
+                            </div>
+
+                            <div class="history-amount">
+                                -₦${amount}
+                            </div>
+
+                        </div>
+
+                        <div class="history-info">
+
+                            <span class="success">
+                                ● ${tx.status}
+                            </span>
+
+                            <br>
+
+                            📅 ${date}
+
+                            <br>
+
+                            📱 ${tx.phone}
+
+                            <br>
+
+                            🆔 ${tx.id}
+
+                            <br>
+
+                            🔑 Request ID:
+                            ${tx.requestID || "N/A"}
+
+                        </div>
+
+                    </div>
+                    `;
+
+                }
+
+
+                return `
+                <div class="history-card">
+
+                    <div class="history-top">
+
+                        <div class="history-title">
+                            💰 Wallet Fund
+                        </div>
+
+                        <div class="history-amount">
+                            +₦${amount}
+                        </div>
+
+                    </div>
+
+                    <div class="history-info">
+
+                        <span class="success">
+                            ● ${tx.status}
+                        </span>
+
+                        <br>
+
+                        📅 ${date}
+
+                        <br>
+
+                        📱 ${tx.phone}
+
+                        <br>
+
+                        🆔 ${tx.id}
+
+                        <br>
+
+                        🔑 Reference:
+                        ${tx.reference || "N/A"}
+
+                    </div>
+
+                </div>
+                `;
+
+            }).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "HISTORY ERROR:",
+            error
+        );
+
+        historyList.innerHTML = `
+            <div class="history-empty">
+                ❌<br>
+                Unable to load transaction history.
+            </div>
+        `;
+
+    }
+
+}
+
+
+loadHistory();
+
+</script>
+
+</body>
+</html>

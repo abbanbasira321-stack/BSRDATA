@@ -3,119 +3,662 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>BSR DATA - Buy Data</title>
+
 <link rel="stylesheet" href="style.css">
+
+<style>
+
+body {
+    margin: 0;
+    background: #f4f7fc;
+    font-family: Arial, sans-serif;
+    padding-bottom: 95px;
+    color: #152238;
+}
+
+/* HEADER */
+
+.topbar {
+    background: linear-gradient(135deg, #1769c2, #0755c9);
+    color: white;
+    padding: 28px 24px;
+    border-radius: 0 0 38px 38px;
+    box-shadow: 0 8px 25px rgba(23,105,194,.25);
+}
+
+.topbar h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+/* CONTAINER */
+
+.container {
+    padding: 24px 20px;
+}
+
+/* INTRO CARD */
+
+.intro-card {
+    background: white;
+    border-radius: 28px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.intro-icon {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+.intro-card h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.intro-card p {
+    margin: 0;
+    color: #777;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+/* FORM CARD */
+
+.form-card {
+    background: white;
+    border-radius: 28px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+/* LABEL */
+
+label {
+    display: block;
+    font-size: 17px;
+    font-weight: bold;
+    margin: 18px 0 9px;
+}
+
+/* INPUTS */
+
+select,
+input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px;
+    border: 2px solid #e0e5ec;
+    border-radius: 16px;
+    background: #fafcff;
+    font-size: 17px;
+    outline: none;
+}
+
+select:focus,
+input:focus {
+    border-color: #1769c2;
+    background: white;
+}
+
+/* DATA ICON */
+
+.section-icon {
+    font-size: 28px;
+    margin-right: 6px;
+}
+
+/* AMOUNT CARDS */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.info-card {
+    border-radius: 20px;
+    padding: 18px;
+    background: #f1f6ff;
+}
+
+.info-card.wallet {
+    background: linear-gradient(
+        135deg,
+        #1769c2,
+        #0755c9
+    );
+    color: white;
+}
+
+.info-card h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.info-card h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+/* BUY BUTTON */
+
+.buy-btn {
+    width: 100%;
+    border: none;
+    border-radius: 18px;
+    padding: 19px;
+    margin-top: 22px;
+    background: linear-gradient(
+        135deg,
+        #1769c2,
+        #0755c9
+    );
+    color: white;
+    font-size: 19px;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(23,105,194,.25);
+}
+
+.buy-btn:disabled {
+    opacity: .55;
+}
+
+/* MESSAGE */
+
+#message {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 14px;
+    white-space: pre-line;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+#message:empty {
+    display: none;
+}
+
+#message.success {
+    background: #e8f8ef;
+    color: #198754;
+}
+
+#message.error {
+    background: #fff0f0;
+    color: #dc3545;
+}
+
+/* QUICK LINKS */
+
+.quick-title {
+    font-size: 25px;
+    margin: 28px 0 15px;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.quick-card {
+    background: white;
+    border-radius: 22px;
+    padding: 22px 15px;
+    box-shadow: 0 7px 20px rgba(0,0,0,.07);
+    cursor: pointer;
+}
+
+.quick-card .icon {
+    font-size: 35px;
+}
+
+.quick-card h3 {
+    margin: 10px 0 5px;
+    font-size: 19px;
+}
+
+.quick-card p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 78px;
+
+    background: white;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    box-shadow: 0 -5px 20px rgba(0,0,0,.12);
+
+    z-index: 1000;
+}
+
+.bottom-nav div {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.bottom-nav div.active {
+    color: #1769c2;
+}
+
+.bottom-nav .nav-icon {
+    font-size: 23px;
+}
+
+/* MOBILE */
+
+@media (max-width: 380px) {
+
+    .info-grid,
+    .quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar h2 {
+        font-size: 28px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
+
+<!-- HEADER -->
 
 <div class="topbar">
     <h2>📶 Buy Data</h2>
 </div>
 
+
 <div class="container">
 
-<div class="form-card">
+    <!-- INTRO -->
 
-<label>Network</label>
+    <div class="intro-card">
 
-<select id="network">
-    <option value="">Choose Network</option>
-    <option value="MTN">MTN</option>
-    <option value="Airtel">Airtel</option>
-    <option value="Glo">Glo</option>
-    <option value="m_9mobile">9mobile</option>
-</select>
+        <div class="intro-icon">📡</div>
 
-<label>Phone Number</label>
+        <h1>Buy Data Instantly</h1>
 
-<input
-    id="phone"
-    type="tel"
-    maxlength="11"
-    placeholder="08012345678"
->
+        <p>
+            Choose your network, select a data plan
+            and purchase data directly from your wallet.
+        </p>
 
-<label>Data Plan</label>
+    </div>
 
-<select id="plan" disabled>
-    <option value="">Loading data plans...</option>
-</select>
 
-<div class="amount">
-    <h3>Amount</h3>
-    <h2 id="amount">₦0.00</h2>
+    <!-- BUY FORM -->
+
+    <div class="form-card">
+
+        <label>
+            📡 Select Network
+        </label>
+
+        <select id="network">
+
+            <option value="">
+                Choose Network
+            </option>
+
+            <option value="MTN">
+                MTN
+            </option>
+
+            <option value="Airtel">
+                Airtel
+            </option>
+
+            <option value="Glo">
+                Glo
+            </option>
+
+            <option value="m_9mobile">
+                9mobile
+            </option>
+
+        </select>
+
+
+        <label>
+            📱 Phone Number
+        </label>
+
+        <input
+            id="phone"
+            type="tel"
+            maxlength="11"
+            placeholder="08012345678"
+        >
+
+
+        <label>
+            📦 Data Plan
+        </label>
+
+        <select id="plan" disabled>
+
+            <option value="">
+                Loading data plans...
+            </option>
+
+        </select>
+
+
+        <!-- AMOUNT + WALLET -->
+
+        <div class="info-grid">
+
+            <div class="info-card">
+
+                <h4>
+                    💰 Data Amount
+                </h4>
+
+                <h2 id="amount">
+                    ₦0.00
+                </h2>
+
+            </div>
+
+
+            <div class="info-card wallet">
+
+                <h4>
+                    💳 Wallet Balance
+                </h4>
+
+                <h2 id="walletBalance">
+                    ₦0.00
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUY -->
+
+        <button
+            id="buyBtn"
+            class="buy-btn"
+            type="button"
+            disabled
+        >
+            📶 BUY DATA
+        </button>
+
+
+        <div id="message"></div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <h2 class="quick-title">
+        Quick Actions
+    </h2>
+
+    <div class="quick-grid">
+
+        <div
+            class="quick-card"
+            onclick="location.href='wallet.html'"
+        >
+
+            <div class="icon">💳</div>
+
+            <h3>Wallet</h3>
+
+            <p>
+                View your balance
+            </p>
+
+        </div>
+
+
+        <div
+            class="quick-card"
+            onclick="location.href='fundwallet.html'"
+        >
+
+            <div class="icon">💰</div>
+
+            <h3>Fund Wallet</h3>
+
+            <p>
+                Add money to wallet
+            </p>
+
+        </div>
+
+
+        <div
+            class="quick-card"
+            onclick="location.href='history.html'"
+        >
+
+            <div class="icon">📜</div>
+
+            <h3>History</h3>
+
+            <p>
+                View transactions
+            </p>
+
+        </div>
+
+
+        <div
+            class="quick-card"
+            onclick="location.href='profile.html'"
+        >
+
+            <div class="icon">👤</div>
+
+            <h3>Profile</h3>
+
+            <p>
+                View your profile
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
 
-<button id="buyBtn" class="buy-btn" type="button" disabled>
-    BUY NOW
-</button>
 
-<div id="message"></div>
+<!-- BOTTOM NAV -->
 
-</div>
-</div>
+<nav class="bottom-nav">
+
+    <div onclick="location.href='index.html'">
+
+        <div class="nav-icon">🏠</div>
+        Home
+
+    </div>
+
+
+    <div onclick="location.href='wallet.html'">
+
+        <div class="nav-icon">💳</div>
+        Wallet
+
+    </div>
+
+
+    <div onclick="location.href='history.html'">
+
+        <div class="nav-icon">📜</div>
+        History
+
+    </div>
+
+
+    <div
+        class="active"
+        onclick="location.href='profile.html'"
+    >
+
+        <div class="nav-icon">👤</div>
+        Profile
+
+    </div>
+
+</nav>
+
 
 <script>
 
-const API = "http://127.0.0.1:3000";
+const API = "";
+const networkSelect =
+    document.getElementById("network");
 
-const networkSelect = document.getElementById("network");
-const phoneInput = document.getElementById("phone");
-const planSelect = document.getElementById("plan");
-const amountText = document.getElementById("amount");
-const buyBtn = document.getElementById("buyBtn");
-const message = document.getElementById("message");
+const phoneInput =
+    document.getElementById("phone");
+
+const planSelect =
+    document.getElementById("plan");
+
+const amountText =
+    document.getElementById("amount");
+
+const walletBalance =
+    document.getElementById("walletBalance");
+
+const buyBtn =
+    document.getElementById("buyBtn");
+
+const message =
+    document.getElementById("message");
+
 
 let allPlans = {};
 
-function messageShow(text, type = "") {
-    message.textContent = text;
-    message.className = type;
+
+/* PHONE */
+
+localStorage.setItem(
+    "userPhone",
+    "09025851659"
+);
+
+const savedPhone =
+    localStorage.getItem("userPhone") ||
+    "09025851659";
+
+phoneInput.value =
+    savedPhone;
+
+
+/* MESSAGE */
+
+function messageShow(
+    text,
+    type = ""
+) {
+
+    message.textContent =
+        text;
+
+    message.className =
+        type;
+
 }
 
 
-// ==========================
-// LOAD PLANS
-// ==========================
+/* =========================
+   LOAD PLANS
+========================= */
 
 async function loadPlans() {
 
     try {
 
-        planSelect.disabled = true;
+        planSelect.disabled =
+            true;
 
         planSelect.innerHTML =
             '<option value="">Loading data plans...</option>';
 
+
         const response =
-            await fetch(API + "/api/plans");
+            await fetch(
+                API + "/api/plans"
+            );
+
 
         if (!response.ok) {
-            throw new Error("HTTP " + response.status);
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+
         }
+
 
         const data =
             await response.json();
 
-        console.log("PLANS RESPONSE:", data);
+
+        console.log(
+            "PLANS RESPONSE:",
+            data
+        );
+
 
         if (!data.MOBILE_NETWORK) {
-            throw new Error("MOBILE_NETWORK not found");
+
+            throw new Error(
+                "MOBILE_NETWORK not found"
+            );
+
         }
+
 
         allPlans =
             data.MOBILE_NETWORK;
 
+
         planSelect.innerHTML =
             '<option value="">Choose Data Plan</option>';
 
-        messageShow("");
 
         console.log(
             "Available networks:",
             Object.keys(allPlans)
         );
+
 
     } catch (error) {
 
@@ -124,20 +667,24 @@ async function loadPlans() {
             error
         );
 
+
         planSelect.innerHTML =
             '<option value="">Unable to load plans</option>';
+
 
         messageShow(
             "Failed to load data plans.",
             "error"
         );
+
     }
+
 }
 
 
-// ==========================
-// NETWORK CHANGE
-// ==========================
+/* =========================
+   NETWORK CHANGE
+========================= */
 
 networkSelect.addEventListener(
     "change",
@@ -146,33 +693,36 @@ networkSelect.addEventListener(
         const network =
             this.value;
 
+
         planSelect.innerHTML =
             '<option value="">Choose Data Plan</option>';
+
 
         amountText.textContent =
             "₦0.00";
 
-        buyBtn.disabled = true;
+
+        buyBtn.disabled =
+            true;
+
 
         if (!network) {
 
-            planSelect.disabled = true;
+            planSelect.disabled =
+                true;
 
             return;
+
         }
 
 
         const networkData =
             allPlans[network];
 
+
         console.log(
             "Selected network:",
             network
-        );
-
-        console.log(
-            "Network data:",
-            networkData
         );
 
 
@@ -181,41 +731,36 @@ networkSelect.addEventListener(
             planSelect.innerHTML =
                 '<option value="">No plans available</option>';
 
-            planSelect.disabled = true;
+            planSelect.disabled =
+                true;
 
             return;
+
         }
-
-
-        /*
-         * API format:
-         *
-         * MTN: [
-         *   {
-         *     ID: "01",
-         *     PRODUCT: [...]
-         *   }
-         * ]
-         */
 
 
         let products = [];
 
 
-        networkData.forEach(group => {
+        networkData.forEach(
+            group => {
 
-            if (
-                group &&
-                Array.isArray(group.PRODUCT)
-            ) {
-
-                products =
-                    products.concat(
+                if (
+                    group &&
+                    Array.isArray(
                         group.PRODUCT
-                    );
-            }
+                    )
+                ) {
 
-        });
+                    products =
+                        products.concat(
+                            group.PRODUCT
+                        );
+
+                }
+
+            }
+        );
 
 
         console.log(
@@ -224,54 +769,68 @@ networkSelect.addEventListener(
         );
 
 
-        if (products.length === 0) {
+        if (
+            products.length === 0
+        ) {
 
             planSelect.innerHTML =
                 '<option value="">No plans available</option>';
 
-            planSelect.disabled = true;
+            planSelect.disabled =
+                true;
 
             return;
+
         }
 
 
-        products.forEach(product => {
+        products.forEach(
+            product => {
 
-            const option =
-                document.createElement("option");
-
-            option.value =
-                product.PRODUCT_ID;
-
-            option.textContent =
-                product.PRODUCT_NAME +
-                " - ₦" +
-                Number(
-                    product.PRODUCT_AMOUNT
-                ).toFixed(2);
-
-            option.dataset.amount =
-                product.PRODUCT_AMOUNT;
-
-            option.dataset.name =
-                product.PRODUCT_NAME;
-
-            planSelect.appendChild(
-                option
-            );
-
-        });
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
 
-        planSelect.disabled = false;
+                option.value =
+                    product.PRODUCT_ID;
+
+
+                option.textContent =
+                    product.PRODUCT_NAME +
+                    " - ₦" +
+                    Number(
+                        product.PRODUCT_AMOUNT
+                    ).toFixed(2);
+
+
+                option.dataset.amount =
+                    product.PRODUCT_AMOUNT;
+
+
+                option.dataset.name =
+                    product.PRODUCT_NAME;
+
+
+                planSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        planSelect.disabled =
+            false;
 
     }
 );
 
 
-// ==========================
-// PLAN CHANGE
-// ==========================
+/* =========================
+   PLAN CHANGE
+========================= */
 
 planSelect.addEventListener(
     "change",
@@ -291,9 +850,11 @@ planSelect.addEventListener(
             amountText.textContent =
                 "₦0.00";
 
-            buyBtn.disabled = true;
+            buyBtn.disabled =
+                true;
 
             return;
+
         }
 
 
@@ -304,15 +865,83 @@ planSelect.addEventListener(
             ).toFixed(2);
 
 
-        buyBtn.disabled = false;
+        buyBtn.disabled =
+            false;
 
     }
 );
 
 
-// ==========================
-// BUY DATA
-// ==========================
+/* =========================
+   LOAD WALLET
+========================= */
+
+async function loadWalletBalance() {
+
+    const phone =
+        phoneInput.value.trim() ||
+        localStorage.getItem(
+            "userPhone"
+        ) ||
+        "09025851659";
+
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/api/wallet?phone=" +
+                encodeURIComponent(
+                    phone
+                )
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "WALLET RESPONSE:",
+            result
+        );
+
+
+        if (
+            result.status ===
+            "SUCCESS"
+        ) {
+
+            walletBalance.textContent =
+                "₦" +
+                Number(
+                    result.balance
+                ).toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "WALLET BALANCE ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BUY DATA
+========================= */
 
 buyBtn.addEventListener(
     "click",
@@ -321,8 +950,10 @@ buyBtn.addEventListener(
         const network =
             networkSelect.value;
 
+
         const phone =
             phoneInput.value.trim();
+
 
         const plan =
             planSelect.value;
@@ -336,10 +967,15 @@ buyBtn.addEventListener(
             );
 
             return;
+
         }
 
 
-        if (!/^0\d{10}$/.test(phone)) {
+        if (
+            !/^0\d{10}$/.test(
+                phone
+            )
+        ) {
 
             messageShow(
                 "Enter a valid Nigerian phone number.",
@@ -347,6 +983,7 @@ buyBtn.addEventListener(
             );
 
             return;
+
         }
 
 
@@ -358,13 +995,16 @@ buyBtn.addEventListener(
             );
 
             return;
+
         }
 
 
-        buyBtn.disabled = true;
+        buyBtn.disabled =
+            true;
+
 
         buyBtn.textContent =
-            "PROCESSING...";
+            "⏳ PROCESSING...";
 
 
         messageShow(
@@ -376,7 +1016,8 @@ buyBtn.addEventListener(
 
             const response =
                 await fetch(
-                    API + "/api/buydata",
+                    API +
+                    "/api/buydata",
                     {
                         method: "POST",
 
@@ -385,11 +1026,17 @@ buyBtn.addEventListener(
                                 "application/json"
                         },
 
-                        body: JSON.stringify({
-                            network: network,
-                            phone: phone,
-                            plan: plan
-                        })
+                        body:
+                            JSON.stringify({
+                                network:
+                                    network,
+
+                                phone:
+                                    phone,
+
+                                plan:
+                                    plan
+                            })
                     }
                 );
 
@@ -405,25 +1052,66 @@ buyBtn.addEventListener(
 
 
             if (
-                result.status === "SUCCESS" ||
-                result.status === "PROCESSING"
+                result.status ===
+                    "SUCCESS" ||
+
+                result.status ===
+                    "PROCESSING" ||
+
+                result.status ===
+                    "ORDER_RECEIVED" ||
+
+                result.status ===
+                    "ORDER_COMPLETED"
             ) {
 
+                const orderID =
+                    result.orderID ||
+                    result.OrderID ||
+                    "N/A";
+
+
+                const requestID =
+                    result.requestID ||
+                    "N/A";
+
+
                 messageShow(
-                    "Request sent successfully. Request ID: " +
-                    (result.requestID || "N/A"),
+                    "✅ Data purchase successful!\n\n" +
+                    "Status: " +
+                    (result.status ||
+                        "SUCCESS") +
+                    "\n\n" +
+                    "Order ID: " +
+                    orderID +
+                    "\n\n" +
+                    "Request ID: " +
+                    requestID,
                     "success"
                 );
+
+
+                await loadWalletBalance();
+
 
             } else {
 
                 messageShow(
-                    result.message ||
-                    "Data purchase failed.",
+                    "❌ Data purchase failed.\n\n" +
+                    "Status: " +
+                    (result.status ||
+                        "UNKNOWN") +
+                    "\n" +
+                    (
+                        result.remark ||
+                        result.message ||
+                        ""
+                    ),
                     "error"
                 );
 
             }
+
 
         } catch (error) {
 
@@ -432,17 +1120,21 @@ buyBtn.addEventListener(
                 error
             );
 
+
             messageShow(
                 "Unable to connect to BSR DATA server.",
                 "error"
             );
 
+
         } finally {
 
-            buyBtn.disabled = false;
+            buyBtn.disabled =
+                false;
+
 
             buyBtn.textContent =
-                "BUY NOW";
+                "📶 BUY DATA";
 
         }
 
@@ -450,8 +1142,11 @@ buyBtn.addEventListener(
 );
 
 
-// Start loading
+/* START */
+
 loadPlans();
+
+loadWalletBalance();
 
 </script>
 
